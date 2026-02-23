@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OmniAI — Unified Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #03040a; --card: #0d1225; --border: rgba(99,179,255,0.08);
+  --ba: rgba(99,179,255,0.22); --blue: #3b82f6; --cyan: #06b6d4;
+  --purple: #8b5cf6; --green: #10b981; --t1: #e8f0ff; --t2: #6b7fa8; --t3: #3a4a6b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--t1);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(59,130,246,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.orb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0}
+.o1{width:500px;height:500px;background:#1d3faa;opacity:.15;top:-150px;left:-80px;animation:breathe 9s ease-in-out infinite}
+.o2{width:350px;height:350px;background:#5b21b6;opacity:.12;bottom:-80px;right:80px;animation:breathe 9s ease-in-out infinite 3s}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dot{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
+@keyframes cur{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes glow{0%,100%{box-shadow:0 0 18px rgba(59,130,246,.4)}50%{box-shadow:0 0 32px rgba(59,130,246,.7),0 0 55px rgba(6,182,212,.25)}}
+@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 55px rgba(59,130,246,.5)}50%{transform:scale(1.07);box-shadow:0 0 85px rgba(59,130,246,.8)}}
+@keyframes ripple{0%{opacity:.7;transform:scale(.8)}100%{opacity:0;transform:scale(1.4)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* TOP */
+.topbar{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 22px;height:58px;border-bottom:1px solid var(--border);background:rgba(8,12,24,.85);backdrop-filter:blur(18px);flex-shrink:0}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px;letter-spacing:-.5px;user-select:none}
+.logo-icon{width:31px;height:31px;background:linear-gradient(135deg,var(--blue),var(--cyan));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;animation:glow 3s ease-in-out infinite}
+.logo em{color:var(--t2);font-style:normal;font-weight:400;font-size:12px;margin-left:3px}
+.modes{display:flex;gap:4px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:11px;padding:3px}
+.mbt{padding:5px 14px;border-radius:8px;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--t2);transition:all .18s}
+.mbt.on{background:linear-gradient(135deg,rgba(59,130,246,.22),rgba(6,182,212,.1));color:var(--t1);border:1px solid rgba(59,130,246,.3);box-shadow:0 0 10px rgba(59,130,246,.18)}
+.mbt:hover:not(.on){background:rgba(255,255,255,.04);color:var(--t1)}
+.tr{display:flex;align-items:center;gap:10px}
+.ibt{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .18s}
+.ibt:hover{border-color:var(--ba);color:var(--t1);background:rgba(59,130,246,.08)}
+.av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;border:2px solid rgba(139,92,246,.4)}
+
+/* LAYOUT */
+.main{display:flex;flex:1;overflow:hidden;position:relative;z-index:1}
+
+/* SIDEBAR */
+.sidebar{width:252px;flex-shrink:0;border-right:1px solid var(--border);background:rgba(8,12,24,.55);display:flex;flex-direction:column;padding:14px 10px;gap:5px;overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.ncb{display:flex;align-items:center;gap:7px;padding:9px 13px;border-radius:9px;border:1px solid rgba(59,130,246,.28);background:linear-gradient(135deg,rgba(59,130,246,.09),rgba(6,182,212,.04));color:var(--t1);font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px;transition:all .18s}
+.ncb:hover{box-shadow:0 0 22px rgba(59,130,246,.22);border-color:rgba(59,130,246,.45)}
+.sl{font-size:9px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--t3);padding:7px 9px 3px}
+.ci{padding:8px 11px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--t2);transition:all .14s;display:flex;align-items:center;gap:7px;border:1px solid transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci:hover{background:rgba(255,255,255,.04);color:var(--t1)}
+.ci.on{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.18);color:var(--t1)}
+.cd{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.msec{margin-top:auto;padding-top:10px;border-top:1px solid var(--border)}
+.mt{display:flex;align-items:center;justify-content:space-between;padding:7px 9px;border-radius:7px;border:1px solid transparent;transition:background .14s;cursor:default}
+.mt:hover{background:rgba(255,255,255,.025)}
+.mi{display:flex;align-items:center;gap:7px}
+.ml{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+.mn{font-size:11px;font-weight:600}
+.ms{font-size:9px;color:var(--t3)}
+.tg{width:30px;height:17px;border-radius:9px;border:none;cursor:pointer;position:relative;transition:background .18s;flex-shrink:0}
+.tg::after{content:'';position:absolute;width:11px;height:11px;border-radius:50%;background:white;top:3px;transition:left .18s}
+.tg.on{background:var(--blue)}.tg.on::after{left:16px}
+.tg.off{background:rgba(255,255,255,.1)}.tg.off::after{left:3px}
+
+/* CHAT */
+.chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.tabs{display:flex;align-items:center;gap:5px;padding:9px 18px;border-bottom:1px solid var(--border);background:rgba(8,12,24,.35);flex-shrink:0;overflow-x:auto}
+.tabs::-webkit-scrollbar{height:2px}
+.tab{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:18px;border:1px solid var(--border);background:rgba(255,255,255,.02);cursor:pointer;font-family:'Syne',sans-serif;font-size:11px;font-weight:600;color:var(--t2);transition:all .18s;white-space:nowrap;flex-shrink:0}
+.tab:hover{border-color:var(--ba);color:var(--t1)}
+.tab.on{color:var(--t1);border-color:transparent}
+.tab .dot{width:6px;height:6px;border-radius:50%}
+.tall{background:linear-gradient(135deg,rgba(59,130,246,.14),rgba(6,182,212,.07));border-color:rgba(59,130,246,.28)!important;color:var(--t1)!important}
+.lbadge{padding:2px 8px;border-radius:14px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.18);font-size:9px;font-weight:700;color:#7aa8ff;letter-spacing:.4px;text-transform:uppercase;margin-left:6px}
+
+/* MESSAGES */
+.msgs{flex:1;overflow-y:auto;padding:22px 18px;display:flex;flex-direction:column;gap:18px}
+.msgs::-webkit-scrollbar{width:3px}
+.msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* WELCOME */
+.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:36px;text-align:center}
+.wlogo{width:76px;height:76px;background:linear-gradient(135deg,var(--blue),var(--cyan));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 0 55px rgba(59,130,246,.32),0 0 110px rgba(6,182,212,.12);animation:glow 3s ease-in-out infinite}
+.welcome h1{font-size:34px;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,#e8f0ff 0%,#6b9bff 50%,#06b6d4 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.welcome p{font-size:12px;color:var(--t2);max-width:420px;line-height:1.75;font-family:'JetBrains Mono',monospace;margin-top:8px}
+.qg{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;max-width:580px;width:100%}
+.qc{padding:13px 15px;border-radius:11px;border:1px solid var(--border);background:rgba(255,255,255,.018);cursor:pointer;text-align:left;font-family:'Syne',sans-serif;font-size:12px;color:var(--t2);transition:all .18s;display:flex;align-items:flex-start;gap:9px}
+.qc:hover{border-color:var(--ba);background:rgba(59,130,246,.055);color:var(--t1);transform:translateY(-1px);box-shadow:0 7px 22px rgba(0,0,0,.28)}
+.qc .qi{font-size:17px;flex-shrink:0}
+.qc .ql{font-weight:700;display:block;margin-bottom:2px;color:var(--t1);font-size:12px}
+.qc .qd{font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+
+/* BUBBLES */
+.mu{display:flex;justify-content:flex-end;animation:fadeUp .25s ease}
+.ub{max-width:62%;padding:11px 15px;background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(6,182,212,.1));border:1px solid rgba(59,130,246,.22);border-radius:15px 15px 4px 15px;font-size:13px;line-height:1.6;box-shadow:0 0 18px rgba(59,130,246,.09)}
+.ma{animation:fadeUp .25s ease}
+.ag{display:grid;gap:9px}
+.ag.g1{grid-template-columns:1fr;max-width:72%}
+.ag.g2{grid-template-columns:1fr 1fr}
+.ag.g3{grid-template-columns:1fr 1fr 1fr}
+.ag.g4,.ag.g5{grid-template-columns:1fr 1fr}
+.ac{padding:13px 15px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:13px;line-height:1.75;color:var(--t2);transition:border-color .18s;position:relative;overflow:hidden}
+.ac::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.ac:hover{border-color:var(--ba)}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.cm{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.cl{width:17px;height:17px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800}
+.ca{display:flex;gap:3px;opacity:0;transition:opacity .18s}
+.ac:hover .ca{opacity:1}
+.cb{width:22px;height:22px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .13s}
+.cb:hover{background:rgba(255,255,255,.05);color:var(--t2)}
+.td{display:flex;gap:3px;align-items:center;padding:3px 0}
+.tdot{width:5px;height:5px;border-radius:50%;background:var(--t3);animation:dot 1.1s ease-in-out infinite}
+.tdot:nth-child(2){animation-delay:.18s}.tdot:nth-child(3){animation-delay:.36s}
+.sc{display:inline-block;width:2px;height:13px;background:var(--blue);margin-left:2px;vertical-align:middle;animation:cur .65s ease-in-out infinite}
+.bb{padding:2px 7px;border-radius:9px;background:rgba(16,185,129,.14);border:1px solid rgba(16,185,129,.28);font-size:8px;font-weight:700;color:#10b981;letter-spacing:.5px;text-transform:uppercase}
+.em{color:#f87171;font-size:11px;font-family:'JetBrains Mono',monospace;padding:5px 0}
+
+/* RC = response content */
+.rc{font-size:13px;line-height:1.75;color:var(--t2)}
+.rc p{margin-bottom:7px}
+.rc pre{background:rgba(0,0,0,.45);padding:11px;border-radius:7px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:#a5f3fc;margin:7px 0;border:1px solid rgba(99,179,255,.1);white-space:pre-wrap}
+.rc code{background:rgba(0,0,0,.3);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#a5f3fc}
+.rc strong{color:var(--t1)}.rc em{color:#a5b4fc}
+.rc h1,.rc h2,.rc h3{color:var(--t1);margin:11px 0 5px;font-size:13px}
+.rc ul,.rc ol{padding-left:16px;margin:5px 0}.rc li{margin-bottom:3px}
+.rc a{color:#7aa8ff;text-decoration:none}.rc a:hover{text-decoration:underline}
+.rc blockquote{border-left:2px solid var(--blue);padding-left:9px;color:var(--t3);margin:7px 0;font-style:italic}
+.rc table{border-collapse:collapse;margin:7px 0;font-size:11px;width:100%}
+.rc th{background:rgba(59,130,246,.1);padding:5px 9px;border:1px solid var(--border);color:var(--t1);text-align:left}
+.rc td{padding:5px 9px;border:1px solid var(--border)}
+.rc hr{border:none;border-top:1px solid var(--border);margin:9px 0}
+
+/* INPUT */
+.sbar{display:flex;align-items:center;gap:10px;padding:0 18px 7px}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);animation:blink 2s ease-in-out infinite}
+.stxt{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3)}
+.input-area{padding:14px 18px 18px;background:rgba(8,12,24,.8);border-top:1px solid var(--border);flex-shrink:0}
+.ibox{background:var(--card);border:1px solid var(--border);border-radius:14px;transition:border-color .18s,box-shadow .18s;overflow:hidden}
+.ibox:focus-within{border-color:rgba(59,130,246,.38);box-shadow:0 0 0 3px rgba(59,130,246,.07),0 0 28px rgba(59,130,246,.09)}
+.itbar{display:flex;align-items:center;gap:3px;padding:9px 13px 0;flex-wrap:wrap}
+.tbn{display:flex;align-items:center;gap:4px;padding:4px 9px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--t2);font-family:'Syne',sans-serif;font-size:10px;font-weight:600;cursor:pointer;transition:all .14s}
+.tbn:hover{background:rgba(255,255,255,.04);color:var(--t1);border-color:var(--ba)}
+.irow{display:flex;align-items:flex-end;gap:9px;padding:7px 13px 11px}
+textarea{flex:1;background:transparent;border:none;outline:none;color:var(--t1);font-family:'Syne',sans-serif;font-size:13px;resize:none;min-height:22px;max-height:130px;line-height:1.5;overflow-y:auto}
+textarea::placeholder{color:var(--t3)}
+.snd{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--cyan));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:all .18s;box-shadow:0 0 14px rgba(59,130,246,.28)}
+.snd:hover{box-shadow:0 0 24px rgba(59,130,246,.5);transform:scale(1.06)}
+.snd:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.ifoot{display:flex;align-items:center;justify-content:space-between;padding:0 13px 7px;font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.ipbar{padding:7px 13px 0;display:flex;gap:7px}
+.ith{width:54px;height:54px;border-radius:7px;background:rgba(17,24,41,1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;position:relative}
+.irm{position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:rgba(0,0,0,.75);border:none;color:white;cursor:pointer;font-size:8px;display:flex;align-items:center;justify-content:center}
+
+/* VOICE */
+.vov{display:none;position:fixed;inset:0;background:rgba(3,4,10,.92);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:22px;backdrop-filter:blur(18px)}
+.vov.on{display:flex}
+.vp{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:44px;position:relative;box-shadow:0 0 55px rgba(59,130,246,.5);animation:pulse 1s ease-in-out infinite}
+.vp::before,.vp::after{content:'';position:absolute;border-radius:50%;border:2px solid rgba(59,130,246,.28);animation:ripple 2s ease-out infinite}
+.vp::before{width:140px;height:140px}.vp::after{width:178px;height:178px;animation-delay:.5s}
+.vt{font-size:16px;color:var(--t2);font-family:'JetBrains Mono',monospace;max-width:380px;text-align:center}
+.vc{padding:9px 26px;border-radius:28px;border:1px solid var(--border);background:transparent;color:var(--t2);font-family:'Syne',sans-serif;font-size:13px;cursor:pointer;transition:all .18s}
+.vc:hover{background:rgba(255,255,255,.05);color:var(--t1)}
+
+/* persona colors */
+.chatgpt{color:#10a37f}.chatgpt-l{background:rgba(16,163,127,.18);color:#10a37f}.chatgpt-b::before{background:#10a37f}
+.gemini{color:#4285f4}.gemini-l{background:rgba(66,133,244,.18);color:#4285f4}.gemini-b::before{background:linear-gradient(90deg,#4285f4,#ea4335)}
+.grok{color:#e879f9}.grok-l{background:rgba(232,121,249,.18);color:#e879f9}.grok-b::before{background:#e879f9}
+.perplexity{color:#20b2aa}.perplexity-l{background:rgba(32,178,170,.18);color:#20b2aa}.perplexity-b::before{background:#20b2aa}
+.claude{color:#d97706}.claude-l{background:rgba(217,119,6,.18);color:#d97706}.claude-b::before{background:#d97706}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div>
+
+<!-- Voice overlay -->
+<div class="vov" id="vov">
+  <div class="vp">🎤</div>
+  <div class="vt" id="vtxt">Listening…</div>
+  <button class="vc" onclick="stopVoice()">Stop</button>
+</div>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="logo"><div class="logo-icon">⬡</div>OmniAI<em>v2.0</em></div>
+  <div class="modes">
+    <button class="mbt on" onclick="setMode(this,'all')">⚡ All</button>
+    <button class="mbt" onclick="setMode(this,'compare')">⚖ Compare</button>
+    <button class="mbt" onclick="setMode(this,'solo')">🎯 Solo</button>
+  </div>
+  <div class="tr">
+    <button class="ibt">⚙</button>
+    <button class="ibt">🕐</button>
+    <div class="av">U</div>
+  </div>
+</div>
+
+<div class="main">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <button class="ncb" onclick="newChat()">+&nbsp;&nbsp;New Conversation</button>
+    <div class="sl">Today</div>
+    <div class="ci on" id="ci0" onclick="sc(this)"><div class="cd" style="background:#3b82f6"></div><span id="ctitle">New conversation</span></div>
+    <div class="ci" onclick="sc(this)"><div class="cd" style="background:#10a37f"></div>Python async patterns</div>
+    <div class="ci" onclick="sc(this)"><div class="cd" style="background:#e879f9"></div>Marketing copy SaaS</div>
+    <div class="sl">Yesterday</div>
+    <div class="ci" onclick="sc(this)"><div class="cd" style="background:#d97706"></div>Recipe ideas chicken</div>
+    <div class="ci" onclick="sc(this)"><div class="cd" style="background:#20b2aa"></div>Quantum computing</div>
+
+    <div class="msec">
+      <div class="sl">AI Personas</div>
+      <div class="mt"><div class="mi"><div class="ml chatgpt-l">G</div><div><div class="mn chatgpt">ChatGPT</div><div class="ms">GPT-4o persona</div></div></div><button class="tg on" data-m="chatgpt" onclick="toggleM(this)"></button></div>
+      <div class="mt"><div class="mi"><div class="ml gemini-l">◈</div><div><div class="mn gemini">Gemini</div><div class="ms">Pro persona</div></div></div><button class="tg on" data-m="gemini" onclick="toggleM(this)"></button></div>
+      <div class="mt"><div class="mi"><div class="ml grok-l">𝕏</div><div><div class="mn grok">Grok</div><div class="ms">Grok-2 persona</div></div></div><button class="tg on" data-m="grok" onclick="toggleM(this)"></button></div>
+      <div class="mt"><div class="mi"><div class="ml perplexity-l">⊛</div><div><div class="mn perplexity">Perplexity</div><div class="ms">Search persona</div></div></div><button class="tg on" data-m="perplexity" onclick="toggleM(this)"></button></div>
+      <div class="mt"><div class="mi"><div class="ml claude-l">◆</div><div><div class="mn claude">Claude</div><div class="ms">Sonnet 4</div></div></div><button class="tg on" data-m="claude" onclick="toggleM(this)"></button></div>
+    </div>
+  </div>
+
+  <!-- Chat -->
+  <div class="chat-area">
+    <div class="tabs">
+      <button class="tab tall on" data-tab="all" onclick="setTab(this)"><div class="dot" style="background:linear-gradient(135deg,#3b82f6,#06b6d4);border-radius:50%"></div>All Models<span class="lbadge">⚡ LIVE</span></button>
+      <button class="tab" data-tab="chatgpt" onclick="setTab(this)"><div class="dot" style="background:#10a37f"></div>ChatGPT</button>
+      <button class="tab" data-tab="gemini" onclick="setTab(this)"><div class="dot" style="background:#4285f4"></div>Gemini</button>
+      <button class="tab" data-tab="grok" onclick="setTab(this)"><div class="dot" style="background:#e879f9"></div>Grok</button>
+      <button class="tab" data-tab="perplexity" onclick="setTab(this)"><div class="dot" style="background:#20b2aa"></div>Perplexity</button>
+      <button class="tab" data-tab="claude" onclick="setTab(this)"><div class="dot" style="background:#d97706"></div>Claude</button>
+    </div>
+
+    <div class="msgs" id="msgs">
+      <div class="welcome" id="welcome">
+        <div class="wlogo">⬡</div>
+        <div><h1>OmniAI</h1><p>Five AI personas. One fast answer. Ask anything and see every perspective instantly.</p></div>
+        <div class="qg">
+          <div class="qc" onclick="useP('How do black holes form and what happens inside them?')"><span class="qi">🌌</span><div><span class="ql">Science</span><span class="qd">How do black holes form?</span></div></div>
+          <div class="qc" onclick="useP('Write a Python function to check if a string is a palindrome')"><span class="qi">💻</span><div><span class="ql">Code</span><span class="qd">Python palindrome checker</span></div></div>
+          <div class="qc" onclick="useP('What are the most effective productivity techniques in 2025?')"><span class="qi">🧠</span><div><span class="ql">Productivity</span><span class="qd">Best habits for 2025</span></div></div>
+          <div class="qc" onclick="useP('Explain machine learning vs deep learning vs AI')"><span class="qi">🤖</span><div><span class="ql">AI & Tech</span><span class="qd">ML vs Deep Learning vs AI</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ipbar" id="ipbar" style="display:none">
+      <div class="ith">🖼<button class="irm" onclick="rmImg()">✕</button></div>
+    </div>
+    <div class="sbar"><div class="sdot"></div><div class="stxt" id="stxt">5 personas ready · Single-call engine · Instant responses</div></div>
+
+    <div class="input-area">
+      <div class="ibox">
+        <div class="itbar">
+          <button class="tbn" onclick="startVoice()">🎤 Voice</button>
+          <button class="tbn" onclick="document.getElementById('fi').click()">📎 Image</button>
+          <button class="tbn" onclick="useP('Generate an image of: ')">✦ Generate</button>
+          <input type="file" id="fi" accept="image/*" style="display:none" onchange="onFile(this)">
+        </div>
+        <div class="irow">
+          <textarea id="inp" placeholder="Ask anything — all personas respond instantly…" rows="1" onkeydown="onKey(event)" oninput="onType(this)"></textarea>
+          <button class="snd" id="snd" onclick="send()">➤</button>
+        </div>
+        <div class="ifoot">
+          <span id="mlabel">Single API call · All personas answer simultaneously</span>
+          <span id="cc">0 / ∞</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── PERSONAS ──────────────────────────────────────────────────────────────────
+const P = [
+  { id:'chatgpt',    name:'ChatGPT',    cls:'chatgpt',    logo:'G', color:'#10a37f',
+    style:'ChatGPT (GPT-4o): balanced, structured, helpful. Uses bullet points and headers. Friendly but professional.' },
+  { id:'gemini',     name:'Gemini',     cls:'gemini',     logo:'◈', color:'#4285f4',
+    style:'Google Gemini Pro: analytical, data-focused. Uses tables when useful. Formal, encyclopedic, cites "multiple sources".' },
+  { id:'grok',       name:'Grok',       cls:'grok',       logo:'𝕏', color:'#e879f9',
+    style:'Grok (xAI): direct, witty, a little irreverent. Short punchy sentences. Dry humor. No fluff — cuts straight to the point.' },
+  { id:'perplexity', name:'Perplexity', cls:'perplexity', logo:'⊛', color:'#20b2aa',
+    style:'Perplexity AI: search-engine style. Starts with direct answer, adds [Source: ...] citations, ends with 2 "Related Questions".' },
+  { id:'claude',     name:'Claude',     cls:'claude',     logo:'◆', color:'#d97706',
+    style:'Claude (Anthropic): thoughtful, nuanced, intellectually curious. Shows reasoning, mentions caveats, warm tone.' }
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let activeTab = 'all';
+let enabled = new Set(P.map(p=>p.id));
+let history = [];
+let busy = false;
+let imgAttached = false;
+let recog = null, listening = false;
+
+// ── SINGLE API CALL → ALL PERSONAS ───────────────────────────────────────────
+// We ask Claude ONCE to generate all 5 persona responses in one JSON payload.
+// This is ~5x faster than 5 parallel calls.
+async function fetchAllPersonas(question, hist) {
+  const vis = getVisible();
+  if (!vis.length) throw new Error('No personas enabled');
+
+  const personaList = vis.map(p=>`- ${p.id}: ${p.style}`).join('\n');
+
+  const sysPrompt = `You are OmniAI's response engine. Given a user question, generate responses from multiple AI personas simultaneously.
+
+Each persona has a distinct voice and style. Produce ONLY a valid JSON object with persona IDs as keys and their responses as string values. No other text, no markdown fences.
+
+Personas to simulate:
+${personaList}
+
+Rules:
+- Each response should be 150-300 words max (concise but complete)
+- Each persona must sound genuinely different from the others
+- Use markdown formatting within each response (**, ##, bullet points, code blocks)
+- Persona responses should NOT mention they are simulated — stay in character
+- Return ONLY the JSON object, nothing else`;
+
+  const msgs = [
+    ...hist.map(h=>({ role:h.role, content:h.content })),
+    { role:'user', content: question }
+  ];
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 2000,
+      system: sysPrompt,
+      messages: msgs
+    })
+  });
+
+  if (!res.ok) {
+    const e = await res.json().catch(()=>({}));
+    throw new Error(e.error?.message || `HTTP ${res.status}`);
+  }
+  const d = await res.json();
+  const raw = d.content?.[0]?.text || '{}';
+
+  // Parse JSON — strip any accidental markdown fences
+  const clean = raw.replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'').trim();
+  return JSON.parse(clean);
+}
+
+// ── MARKDOWN RENDERER ─────────────────────────────────────────────────────────
+function md(t) {
+  let o = t;
+  o = o.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,l,c)=>`<pre><code>${c.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre>`);
+  o = o.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  o = o.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+  o = o.replace(/^## (.+)$/gm,'<h2>$1</h2>');
+  o = o.replace(/^# (.+)$/gm,'<h1>$1</h1>');
+  o = o.replace(/\*\*\*([^*]+)\*\*\*/g,'<strong><em>$1</em></strong>');
+  o = o.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  o = o.replace(/\*([^*\n]+)\*/g,'<em>$1</em>');
+  o = o.replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>');
+  o = o.replace(/^---$/gm,'<hr>');
+  o = o.replace(/^[ \t]*[-*] (.+)$/gm,'<li>$1</li>');
+  o = o.replace(/^[ \t]*\d+\. (.+)$/gm,'<li>$1</li>');
+  o = o.replace(/(<li>[\s\S]*?<\/li>(\n|$))+/g,m=>`<ul>${m}</ul>`);
+  o = o.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank">$1</a>');
+  // Paragraphs
+  const lines = o.split('\n');
+  let result=[], buf=[], inpre=false;
+  for(const l of lines){
+    if(l.includes('<pre')) inpre=true;
+    if(l.includes('</pre>')) inpre=false;
+    if(!inpre && l.trim()===''){
+      if(buf.length){ result.push(`<p>${buf.join('<br>')}</p>`); buf=[]; }
+    } else if(!inpre && l.match(/^<(h[1-3]|ul|pre|blockquote|hr)/)){
+      if(buf.length){ result.push(`<p>${buf.join('<br>')}</p>`); buf=[]; }
+      result.push(l);
+    } else { buf.push(l); }
+  }
+  if(buf.length) result.push(`<p>${buf.join('<br>')}</p>`);
+  return result.join('');
+}
+
+// ── FAST STREAM (text reveal without API delay) ───────────────────────────────
+function stream(el, text, speed, done) {
+  const chars=[...text]; let i=0;
+  const cur=document.createElement('span'); cur.className='sc';
+  el.innerHTML=''; el.appendChild(cur);
+  const t=setInterval(()=>{
+    cur.insertAdjacentText('beforebegin', chars.slice(i,i+8).join('')); i+=8;
+    if(i>=chars.length){
+      clearInterval(t); cur.remove();
+      const d=document.createElement('div'); d.className='rc';
+      d.innerHTML=md(text); el.innerHTML=''; el.appendChild(d);
+      if(done) done();
+    }
+  }, speed);
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function getVisible(){
+  if(activeTab==='all') return P.filter(p=>enabled.has(p.id));
+  return P.filter(p=>p.id===activeTab && enabled.has(p.id));
+}
+
+// ── SEND ──────────────────────────────────────────────────────────────────────
+async function send(){
+  if(busy) return;
+  const ta=document.getElementById('inp');
+  const q=ta.value.trim();
+  if(!q) return;
+  busy=true;
+  document.getElementById('snd').disabled=true;
+
+  if(!history.length){
+    const s=q.length>32?q.slice(0,32)+'…':q;
+    document.getElementById('ctitle').textContent=s;
+  }
+
+  const msgs=document.getElementById('msgs');
+  const welcome=document.getElementById('welcome');
+  if(welcome) welcome.remove();
+
+  // User bubble
+  const ub=document.createElement('div'); ub.className='mu';
+  ub.innerHTML=`<div class="ub">${q.replace(/</g,'&lt;').replace(/>/g,'&gt;')}${imgAttached?'<br><br>📎 <em style="font-size:11px;color:var(--t2)">Image attached</em>':''}</div>`;
+  msgs.appendChild(ub);
+  if(imgAttached){ document.getElementById('ipbar').style.display='none'; imgAttached=false; }
+
+  ta.value=''; ta.style.height='auto';
+  document.getElementById('cc').textContent='0 / ∞';
+  msgs.scrollTop=msgs.scrollHeight;
+
+  history.push({role:'user',content:q});
+
+  const vis=getVisible();
+  if(!vis.length){
+    const ed=document.createElement('div');
+    ed.innerHTML='<div class="em">⚠ No personas active. Enable at least one in the sidebar.</div>';
+    msgs.appendChild(ed); busy=false; document.getElementById('snd').disabled=false; return;
+  }
+
+  // Build skeleton cards with typing indicators
+  const gc=vis.length===1?'g1':vis.length===2?'g2':vis.length===3?'g3':'g4';
+  const wrap=document.createElement('div'); wrap.className='ma';
+  let html=`<div class="ag ${gc}">`;
+  vis.forEach(p=>{
+    html+=`<div class="ac ${p.cls}-b" id="ac-${p.id}">
+      <div class="ch">
+        <div class="cm ${p.cls}"><div class="cl ${p.cls}-l">${p.logo}</div>${p.name}</div>
+        <div class="ca">
+          <button class="cb" onclick="copyR('r-${p.id}')" title="Copy">⧉</button>
+          <button class="cb" title="Like">♡</button>
+        </div>
+      </div>
+      <div class="td" id="td-${p.id}"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>
+      <div id="r-${p.id}"></div>
+    </div>`;
+  });
+  html+='</div>';
+  wrap.innerHTML=html;
+  msgs.appendChild(wrap);
+  msgs.scrollTop=msgs.scrollHeight;
+
+  document.getElementById('stxt').textContent=`⚡ Generating all responses in one call…`;
+
+  // ONE API CALL for everything
+  try {
+    const snap=history.slice(0,-1);
+    const results=await fetchAllPersonas(q, snap);
+
+    // Stream each response in with slight stagger for visual effect
+    vis.forEach((p,i)=>{
+      setTimeout(()=>{
+        const td=document.getElementById(`td-${p.id}`);
+        const rd=document.getElementById(`r-${p.id}`);
+        const card=document.getElementById(`ac-${p.id}`);
+        if(td) td.style.display='none';
+        const text=results[p.id] || `${p.name} response unavailable.`;
+        if(rd){
+          // Speed: shorter text = faster reveal; stagger 80ms per card
+          const speed=Math.max(5, Math.floor(1500/[...text].length));
+          stream(rd, text, speed, ()=>{
+            if(i===0 && vis.length>1 && card){
+              const hdr=card.querySelector('.cm');
+              if(hdr && !card.querySelector('.bb')){
+                hdr.insertAdjacentHTML('afterend','<div style="margin-top:5px"><span class="bb">⚡ Best Match</span></div>');
+              }
+            }
+          });
+        }
+        msgs.scrollTop=msgs.scrollHeight;
+      }, i*80); // stagger cards 80ms apart
+    });
+
+    // Save best response to history
+    const fst=vis[0]?.id;
+    if(fst && results[fst]) history.push({role:'assistant',content:results[fst]});
+    if(history.length>20) history=history.slice(-20);
+    document.getElementById('stxt').textContent=`${vis.length} persona${vis.length>1?'s':''} answered · Single API call · Context: ${Math.floor(history.length/2)} turns`;
+
+  } catch(err) {
+    vis.forEach(p=>{
+      const td=document.getElementById(`td-${p.id}`);
+      const rd=document.getElementById(`r-${p.id}`);
+      if(td) td.style.display='none';
+      if(rd) rd.innerHTML=`<div class="em">⚠ Error: ${err.message}</div>`;
+    });
+    document.getElementById('stxt').textContent=`Error — check API connection`;
+  }
+
+  busy=false;
+  document.getElementById('snd').disabled=false;
+}
+
+function copyR(id){
+  const el=document.getElementById(id);
+  if(el) navigator.clipboard.writeText(el.innerText||el.textContent).catch(()=>{});
+}
+
+// ── VOICE ─────────────────────────────────────────────────────────────────────
+function startVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ alert('Voice requires Chrome'); return; }
+  recog=new SR(); recog.continuous=false; recog.interimResults=true; recog.lang='en-US';
+  document.getElementById('vov').classList.add('on');
+  document.getElementById('vtxt').textContent='Listening…';
+  listening=true;
+  recog.onresult=e=>{
+    const t=Array.from(e.results).map(r=>r[0].transcript).join('');
+    document.getElementById('vtxt').textContent=t||'Listening…';
+    if(e.results[e.results.length-1].isFinal){ document.getElementById('inp').value=t; stopVoice(); setTimeout(send,300); }
+  };
+  recog.onerror=()=>stopVoice();
+  recog.onend=()=>{ if(listening) stopVoice(); };
+  recog.start();
+}
+function stopVoice(){ listening=false; if(recog){recog.stop();recog=null;} document.getElementById('vov').classList.remove('on'); }
+
+// ── UI ────────────────────────────────────────────────────────────────────────
+function setMode(btn,m){
+  document.querySelectorAll('.mbt').forEach(b=>b.classList.remove('on')); btn.classList.add('on');
+  if(m==='solo'){ const t=document.querySelector('[data-tab="claude"]'); if(t) setTab(t); document.getElementById('mlabel').textContent='Solo mode: Claude answers directly'; }
+  else { const t=document.querySelector('[data-tab="all"]'); if(t) setTab(t); document.getElementById('mlabel').textContent='Single API call · All personas answer simultaneously'; }
+}
+function setTab(btn){ document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); activeTab=btn.getAttribute('data-tab')||'all'; }
+function toggleM(btn){
+  btn.classList.toggle('on'); btn.classList.toggle('off');
+  const m=btn.getAttribute('data-m');
+  if(btn.classList.contains('on')) enabled.add(m); else enabled.delete(m);
+  document.getElementById('stxt').textContent=`${enabled.size} persona${enabled.size!==1?'s':''} active`;
+}
+function sc(el){ document.querySelectorAll('.ci').forEach(i=>i.classList.remove('on')); el.classList.add('on'); }
+function newChat(){
+  history=[];
+  document.getElementById('msgs').innerHTML=`<div class="welcome" id="welcome"><div class="wlogo">⬡</div><div><h1>OmniAI</h1><p>Five AI personas. One fast answer. Ask anything and see every perspective instantly.</p></div><div class="qg"><div class="qc" onclick="useP('How do black holes form and what happens inside them?')"><span class="qi">🌌</span><div><span class="ql">Science</span><span class="qd">How do black holes form?</span></div></div><div class="qc" onclick="useP('Write a Python function to check if a string is a palindrome')"><span class="qi">💻</span><div><span class="ql">Code</span><span class="qd">Python palindrome checker</span></div></div><div class="qc" onclick="useP('What are the most effective productivity techniques in 2025?')"><span class="qi">🧠</span><div><span class="ql">Productivity</span><span class="qd">Best habits for 2025</span></div></div><div class="qc" onclick="useP('Explain machine learning vs deep learning vs AI')"><span class="qi">🤖</span><div><span class="ql">AI & Tech</span><span class="qd">ML vs Deep Learning vs AI</span></div></div></div></div>`;
+  document.getElementById('ctitle').textContent='New conversation';
+  document.getElementById('stxt').textContent='5 personas ready · Single-call engine · Instant responses';
+  document.querySelectorAll('.ci').forEach(i=>i.classList.remove('on'));
+  document.getElementById('ci0').classList.add('on');
+}
+function useP(t){ document.getElementById('inp').value=t; send(); }
+function onKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} }
+function onType(ta){ ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight,130)+'px'; document.getElementById('cc').textContent=ta.value.length+' / ∞'; }
+function onFile(i){ if(i.files&&i.files[0]){document.getElementById('ipbar').style.display='flex';imgAttached=true;} }
+function rmImg(){ document.getElementById('ipbar').style.display='none'; imgAttached=false; document.getElementById('fi').value=''; }
+</script>
+</body>
+</html>
